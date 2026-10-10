@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>كم تعرفني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700&display=swap">
+<style>
+/* Layout: one centered phone-width column; screens (setup, start, quiz, result) swapped in place. */
+:root {
+  --bg: #EAF3F1;
+  --surface: #FFFFFF;
+  --fg: #0F2B2A;
+  --muted: #4F6E6B;
+  --line: #C5DAD6;
+  --brand: #0E5C57;
+  --on-brand: #FFFFFF;
+  --accent: #F2B01E;
+  --on-accent: #1B1400;
+  --good: #1E8E5A;
+  --good-bg: #DDF3E7;
+  --bad: #C8402F;
+  --bad-bg: #FBE3DF;
+  --font-display: "Lalezar", "Tajawal", system-ui, sans-serif;
+  --font-body: "Tajawal", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B2220;
+    --surface: #12312F;
+    --fg: #E8F4F2;
+    --muted: #92B5B0;
+    --line: #24504C;
+    --brand: #4FC3B8;
+    --on-brand: #08201E;
+    --good: #4CCB8A;
+    --good-bg: #163F31;
+    --bad: #FF7A68;
+    --bad-bg: #4A2420;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B2220;
+  --surface: #12312F;
+  --fg: #E8F4F2;
+  --muted: #92B5B0;
+  --line: #24504C;
+  --brand: #4FC3B8;
+  --on-brand: #08201E;
+  --good: #4CCB8A;
+  --good-bg: #163F31;
+  --bad: #FF7A68;
+  --bad-bg: #4A2420;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 24px 40px;
+}
+.app { max-width: 520px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+h1, h2 { font-family: var(--font-display); font-weight: 400; line-height: 1.2; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.brand { font-family: var(--font-display); color: var(--brand); font-size: 1.1rem; letter-spacing: 0.02em; }
+
+.btn {
+  font: inherit;
+  font-weight: 700;
+  border: 0;
+  border-radius: 14px;
+  min-height: 54px;
+  padding: 10px 22px;
+  background: var(--accent);
+  color: var(--on-accent);
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.btn:hover:not(:disabled) { filter: brightness(1.05); }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.alt { background: transparent; color: var(--brand); border: 2px solid var(--brand); }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+
+.hero h1, .head h1 { font-size: clamp(2.4rem, 10vw, 3.4rem); color: var(--fg); }
+.hero h1 span, .head h1 span { color: var(--brand); }
+.lead { color: var(--muted); }
+.small { font-size: 0.9rem; color: var(--muted); }
+
+/* rules (start screen) */
+.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.rule { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 8px; text-align: center; }
+.rule b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.9rem; line-height: 1.1; color: var(--brand); }
+.rule small { color: var(--muted); font-size: 0.85rem; }
+
+/* setup */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-weight: 700; }
+.input {
+  font: inherit;
+  min-height: 50px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--fg);
+  width: 100%;
+}
+.input:focus-visible { border-color: var(--brand); outline-offset: 2px; }
+.group { font-family: var(--font-display); font-size: 1.5rem; color: var(--brand); padding-top: 8px; }
+.qcard { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.qcard .qt { font-weight: 700; }
+.chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.chip {
+  font: inherit;
+  min-height: 46px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  cursor: pointer;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.chip:hover { border-color: var(--brand); }
+.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--on-brand); font-weight: 700; }
+.progress { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--bg); padding-block: 8px; display: flex; flex-direction: column; gap: 6px; }
+.bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
+.linkbox { background: var(--surface); border: 2px solid var(--brand); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.linkbox .input { direction: ltr; text-align: left; font-size: 0.9rem; }
+.copied { color: var(--good); font-weight: 700; min-height: 1.6em; }
+
+/* quiz */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.counter { font-weight: 700; font-variant-numeric: tabular-nums; }
+.score { color: var(--muted); font-variant-numeric: tabular-nums; }
+.dots { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 5px; }
+.dot { height: 8px; border-radius: 99px; background: var(--line); }
+.dot.now { background: var(--accent); }
+.dot.ok { background: var(--good); }
+.dot.no { background: var(--bad); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px 18px; display: flex; flex-direction: column; gap: 18px; }
+.topic { font-size: 0.85rem; color: var(--brand); font-weight: 700; letter-spacing: 0.04em; }
+.q { font-size: clamp(1.6rem, 6.5vw, 2rem); }
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  font: inherit;
+  text-align: start;
+  min-height: 54px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  cursor: pointer;
+}
+.opt:hover:not(:disabled) { border-color: var(--brand); }
+.opt:disabled { cursor: default; }
+.opt.good { border-color: var(--good); background: var(--good-bg); font-weight: 700; }
+.opt.bad { border-color: var(--bad); background: var(--bad-bg); }
+.opt.dim { opacity: 0.55; }
+.feedback { min-height: 1.6em; font-weight: 700; }
+.feedback.good { color: var(--good); }
+.feedback.bad { color: var(--bad); }
+
+/* result */
+.result { text-align: center; align-items: center; }
+.result > * { max-width: 100%; }
+.big { font-family: var(--font-display); font-size: 5rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.result.win .big, .result.win h2 { color: var(--good); }
+.result.lose .big, .result.lose h2 { color: var(--bad); }
+.result h2 { font-size: 2.4rem; }
+.pop { animation: pop 0.45s ease-out; }
+@keyframes pop { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .pop { animation: none; } .btn:active { transform: none; } .bar > i { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="app" dir="rtl" lang="ar">
+  <div class="brand">اختبار الشخصية</div>
+
+  <!-- وضع المنشئ: يحدد الأجوبة ويطلع الرابط -->
+  <section id="screen-setup" class="col" hidden>
+    <div class="head col">
+      <h1>سوّ <span>اختبارك</span></h1>
+      <p class="lead">اختر الجواب الصحيح لكل سؤال عن نفسك، وبعدها تنسخ الرابط وترسله لأصحابك. هم يجاوبون وأنت تشوف مين يعرفك.</p>
+    </div>
+    <div class="field">
+      <label for="name-input">اسمك (اختياري)</label>
+      <input class="input" id="name-input" type="text" maxlength="20" placeholder="مثلاً: أيمن" autocomplete="off">
+    </div>
+    <div class="progress">
+      <div class="small" id="setup-count"></div>
+      <div class="bar"><i id="setup-bar"></i></div>
+    </div>
+    <div class="col" id="setup-list"></div>
+    <button class="btn" id="btn-make" type="button" disabled>أنشئ الرابط</button>
+    <div class="linkbox" id="linkbox" hidden>
+      <b>رابط اختبارك جاهز</b>
+      <input class="input" id="link-input" type="text" readonly aria-label="رابط الاختبار">
+      <button class="btn" id="btn-copy" type="button">انسخ الرابط</button>
+      <p class="copied" id="copied" aria-live="polite"></p>
+      <p class="small">قبل لا ترسله، شارك الصفحة من زر المشاركة عشان يفتح الرابط عند أصحابك.</p>
+    </div>
+  </section>
+
+  <!-- بداية الاختبار (للاعب) -->
+  <section id="screen-start" class="hero col" hidden>
+    <h1 id="hero-title"></h1>
+    <p class="lead">أسئلة عن الأكل، المهارات، وأشياء يحبها. جاوب صح وشوف كم تعرفه فعلاً.</p>
+    <div class="rules">
+      <div class="rule"><b>١٠</b><small>أسئلة عشوائية</small></div>
+      <div class="rule"><b>٦</b><small>تحتاجها عشان تفوز</small></div>
+      <div class="rule"><b>٢٥</b><small>سؤال في البنك</small></div>
+    </div>
+    <button class="btn" id="btn-start" type="button">ابدأ الاختبار</button>
+  </section>
+
+  <!-- الأسئلة -->
+  <section id="screen-quiz" hidden class="col">
+    <div class="top">
+      <span class="counter" id="counter"></span>
+      <span class="score" id="score"></span>
+    </div>
+    <div class="dots" id="dots" aria-hidden="true"></div>
+    <div class="card">
+      <div class="topic" id="topic"></div>
+      <h2 class="q" id="question"></h2>
+      <div class="opts" id="opts"></div>
+      <p class="feedback" id="feedback" aria-live="polite"></p>
+    </div>
+    <button class="btn" id="btn-next" type="button" hidden>التالي</button>
+  </section>
+
+  <!-- النتيجة -->
+  <section id="screen-result" hidden>
+    <div class="card result pop" id="result-card">
+      <div class="big" id="result-score"></div>
+      <h2 id="result-title"></h2>
+      <p class="lead" id="result-text"></p>
+      <button class="btn" id="btn-again" type="button">العب مرة ثانية</button>
+      <a class="btn alt" id="btn-make-own" target="_blank" rel="noopener">سوّ اختبارك الخاص</a>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ---------- الإعدادات ---------- */
+var BASE = location.href.split("#")[0];
+var QUESTIONS_PER_GAME = 10;
+var WIN_ABOVE = 5; // يفوز إذا جاوب أكثر من 5
+
+/* بنك الأسئلة. ترتيبه ثابت لأن الرابط يحفظ رقم الجواب الصحيح لكل سؤال حسب مكانه. */
+var BANK = [
+  { t: "أكل", q: "ايش أكلتي المفضلة؟", o: ["كبسة", "برجر", "بيتزا", "شاورما"] },
+  { t: "أكل", q: "ايش أحب أشرب مع الأكل؟", o: ["ببسي", "عصير برتقال", "ماي", "لبن"] },
+  { t: "أكل", q: "ايش أحب آكل على الفطور؟", o: ["فول", "شكشوكة", "جبنة وعسل", "كرواسون"] },
+  { t: "أكل", q: "ايش نكهة الآيس كريم اللي أحبها؟", o: ["فانيلا", "شوكولاتة", "فراولة", "مانجو"] },
+  { t: "أكل", q: "مع الكبسة أحب يكون جنبها؟", o: ["سلطة", "لبن", "شطة", "دقوس"] },
+  { t: "أكل", q: "مع البرجر أحب؟", o: ["بطاطس", "رنج بصل", "كولسلو", "ولا شي"] },
+  { t: "أكل", q: "ايش أحب أشرب من المشروبات الساخنة؟", o: ["قهوة عربية", "شاي كرك", "نسكافيه", "ما أشرب"] },
+  { t: "أكل", q: "ايش الحلا المفضل عندي؟", o: ["كنافة", "كيك شوكولاتة", "أم علي", "بسبوسة"] },
+  { t: "أكل", q: "أي وجبة أحب أكثر؟", o: ["الفطور", "الغداء", "العشاء", "السناك"] },
+  { t: "مهارات", q: "ايش أقوى مهارة عندي؟", o: ["البرمجة", "الطبخ", "الرسم", "الرياضة"] },
+  { t: "مهارات", q: "أي رياضة أحب أمارسها؟", o: ["كرة قدم", "سباحة", "جري", "بلياردو"] },
+  { t: "مهارات", q: "أي لغة أجيدها غير العربي؟", o: ["انجليزي", "فرنسي", "تركي", "ياباني"] },
+  { t: "مهارات", q: "ايش مهارة أتمنى أتعلمها؟", o: ["الجيتار", "الطيران", "الطبخ الإيطالي", "التصوير"] },
+  { t: "أشياء أحبها", q: "ايش أحب أسوي بوقت فراغي؟", o: ["ألعاب فيديو", "نوم", "مشي", "قراءة"] },
+  { t: "أشياء أحبها", q: "أي فصل أحب أكثر؟", o: ["الصيف", "الشتاء", "الربيع", "الخريف"] },
+  { t: "أشياء أحبها", q: "وين أحب أسافر؟", o: ["تركيا", "دبي", "لندن", "اليابان"] },
+  { t: "أشياء أحبها", q: "ايش لوني المفضل؟", o: ["أزرق", "أسود", "أخضر", "أحمر"] },
+  { t: "أشياء أحبها", q: "أي نوع أفلام أحب؟", o: ["أكشن", "كوميدي", "رعب", "وثائقي"] },
+  { t: "أشياء أحبها", q: "أنا شخص؟", o: ["صباحي", "سهران", "حسب الظروف", "أنام طول اليوم"] },
+  { t: "أشياء أحبها", q: "أي حيوان أحب؟", o: ["قطط", "كلاب", "صقور", "خيل"] },
+  { t: "عادات", q: "ايش أول شي أسويه لما أصحى؟", o: ["أشوف الجوال", "أشرب قهوة", "أصلي", "أرجع أنام"] },
+  { t: "عادات", q: "ايش أحب أسوي في الويكند؟", o: ["كشتة", "نوم", "طلعة مع الربع", "سينما"] },
+  { t: "عادات", q: "أي تطبيق أفتحه أكثر؟", o: ["سناب", "تيك توك", "انستقرام", "يوتيوب"] },
+  { t: "عادات", q: "ايش أكثر شي يضايقني؟", o: ["الزحمة", "الانتظار", "الصوت العالي", "الكذب"] },
+  { t: "عادات", q: "ايش نوع السيارة اللي أحبها؟", o: ["تويوتا", "مرسيدس", "جيب", "تسلا"] }
+];
+var N = BANK.length;
+
+/* ---------- أدوات ---------- */
+function ar(n) { return String(n).replace(/\d/g, function (d) { return "٠١٢٣٤٥٦٧٨٩"[d]; }); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function $(id) { return document.getElementById(id); }
+function show(name) {
+  ["setup", "start", "quiz", "result"].forEach(function (s) { $("screen-" + s).hidden = s !== name; });
+}
+
+/* الرابط: #q + رقم الجواب (0-3) لكل سؤال + n + اسم المنشئ بصيغة hex */
+function toHex(str) {
+  return Array.prototype.map.call(new TextEncoder().encode(str), function (b) {
+    return ("0" + b.toString(16)).slice(-2);
+  }).join("");
+}
+function fromHex(hex) {
+  var bytes = [];
+  for (var i = 0; i < hex.length; i += 2) bytes.push(parseInt(hex.substr(i, 2), 16));
+  return new TextDecoder("utf-8").decode(new Uint8Array(bytes));
+}
+function buildCode(picks, name) {
+  return "q" + picks.join("") + (name ? "n" + toHex(name) : "");
+}
+function parseHash() {
+  var h = (location.hash || "").replace(/^#/, "");
+  var m = new RegExp("^q([0-3]{" + N + "})(?:n((?:[0-9a-f]{2})*))?$").exec(h);
+  if (!m) return null;
+  var name = "";
+  try { name = m[2] ? fromHex(m[2]).slice(0, 20) : ""; } catch (e) { name = ""; }
+  return { answers: m[1].split("").map(Number), name: name };
+}
+
+/* ---------- وضع المنشئ ---------- */
+var picks = [];
+
+function renderSetup() {
+  picks = [];
+  for (var i = 0; i < N; i++) picks.push(-1);
+  var list = $("setup-list");
+  list.innerHTML = "";
+  var lastTopic = "";
+  BANK.forEach(function (item, idx) {
+    if (item.t !== lastTopic) {
+      var g = document.createElement("div");
+      g.className = "group";
+      g.textContent = item.t;
+      list.appendChild(g);
+      lastTopic = item.t;
+    }
+    var card = document.createElement("div");
+    card.className = "qcard";
+    var qt = document.createElement("div");
+    qt.className = "qt";
+    qt.textContent = item.q;
+    var chips = document.createElement("div");
+    chips.className = "chips";
+    item.o.forEach(function (text, oi) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.setAttribute("aria-pressed", "false");
+      b.textContent = text;
+      b.addEventListener("click", function () {
+        picks[idx] = oi;
+        Array.prototype.forEach.call(chips.children, function (c, ci) {
+          c.setAttribute("aria-pressed", ci === oi ? "true" : "false");
+        });
+        updateSetup();
+      });
+      chips.appendChild(b);
+    });
+    card.appendChild(qt);
+    card.appendChild(chips);
+    list.appendChild(card);
+  });
+  updateSetup();
+}
+
+function updateSetup() {
+  var done = picks.filter(function (p) { return p >= 0; }).length;
+  $("setup-count").textContent = "حددت " + ar(done) + " من " + ar(N);
+  $("setup-bar").style.width = (done / N * 100) + "%";
+  $("btn-make").disabled = done < N;
+  $("btn-make").textContent = done < N ? "باقي " + ar(N - done) + " أسئلة" : "أنشئ الرابط";
+  $("linkbox").hidden = true;
+}
+
+function makeLink() {
+  var name = $("name-input").value.trim().slice(0, 20);
+  var link = BASE + "#" + buildCode(picks, name);
+  $("link-input").value = link;
+  $("copied").textContent = "";
+  $("linkbox").hidden = false;
+  $("linkbox").scrollIntoView({ block: "center" });
+}
+
+function copyLink() {
+  var input = $("link-input");
+  var link = input.value;
+  function fallback() {
+    input.focus();
+    input.select();
+    $("copied").textContent = "حدد الرابط وانسخه يدوياً.";
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(function () {
+        $("copied").textContent = "انسخ! الحين أرسله لأصحابك.";
+      }, fallback);
+    } else {
+      fallback();
+    }
+  } catch (e) {
+    fallback();
+  }
+}
+
+/* ---------- وضع اللاعب ---------- */
+var cfg = null;
+var game = null;
+
+function prepare(item, correctIdx) {
+  var correctText = item.o[correctIdx];
+  var opts = shuffle(item.o);
+  return { t: item.t, q: item.q, o: opts, a: opts.indexOf(correctText) };
+}
+
+function setupStart() {
+  var h = $("hero-title");
+  h.textContent = "كم ";
+  var span = document.createElement("span");
+  span.textContent = cfg.name ? "تعرف " + cfg.name + "؟" : "تعرفني؟";
+  h.appendChild(span);
+  $("btn-make-own").href = BASE;
+  show("start");
+}
+
+function startGame() {
+  var order = [];
+  for (var i = 0; i < N; i++) order.push(i);
+  game = {
+    qs: shuffle(order).slice(0, QUESTIONS_PER_GAME).map(function (i) { return prepare(BANK[i], cfg.answers[i]); }),
+    i: 0,
+    score: 0,
+    marks: [],
+    locked: false
+  };
+  show("quiz");
+  render();
+}
+
+function renderDots() {
+  var html = "";
+  for (var k = 0; k < QUESTIONS_PER_GAME; k++) {
+    var cls = "dot";
+    if (game.marks[k] === true) cls += " ok";
+    else if (game.marks[k] === false) cls += " no";
+    else if (k === game.i) cls += " now";
+    html += '<span class="' + cls + '"></span>';
+  }
+  $("dots").innerHTML = html;
+}
+
+function render() {
+  var q = game.qs[game.i];
+  game.locked = false;
+  $("counter").textContent = "سؤال " + ar(game.i + 1) + " من " + ar(QUESTIONS_PER_GAME);
+  $("score").textContent = "صح: " + ar(game.score);
+  $("topic").textContent = q.t;
+  $("question").textContent = q.q;
+  $("feedback").textContent = "";
+  $("feedback").className = "feedback";
+  $("btn-next").hidden = true;
+  renderDots();
+
+  var box = $("opts");
+  box.innerHTML = "";
+  q.o.forEach(function (text, idx) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "opt";
+    b.textContent = text;
+    b.addEventListener("click", function () { answer(idx); });
+    box.appendChild(b);
+  });
+}
+
+function answer(idx) {
+  if (game.locked) return;
+  game.locked = true;
+  var q = game.qs[game.i];
+  var ok = idx === q.a;
+  if (ok) game.score++;
+  game.marks[game.i] = ok;
+
+  var btns = $("opts").children;
+  for (var k = 0; k < btns.length; k++) {
+    btns[k].disabled = true;
+    if (k === q.a) btns[k].classList.add("good");
+    else if (k === idx) btns[k].classList.add("bad");
+    else btns[k].classList.add("dim");
+  }
+  var fb = $("feedback");
+  fb.textContent = ok ? "صح عليك!" : "غلط، الجواب: " + q.o[q.a];
+  fb.className = "feedback " + (ok ? "good" : "bad");
+  $("score").textContent = "صح: " + ar(game.score);
+  renderDots();
+
+  var last = game.i === QUESTIONS_PER_GAME - 1;
+  $("btn-next").textContent = last ? "شوف النتيجة" : "التالي";
+  $("btn-next").hidden = false;
+  $("btn-next").focus();
+}
+
+function next() {
+  if (game.i < QUESTIONS_PER_GAME - 1) {
+    game.i++;
+    render();
+  } else {
+    finish();
+  }
+}
+
+function finish() {
+  var win = game.score > WIN_ABOVE;
+  $("result-card").className = "card result pop " + (win ? "win" : "lose");
+  $("result-score").textContent = ar(game.score) + " / " + ar(QUESTIONS_PER_GAME);
+  $("result-title").textContent = win ? "فزت!" : "خسرت";
+  $("result-text").textContent = win
+    ? "تعرفه زين، جاوبت " + ar(game.score) + " أسئلة صح."
+    : "جاوبت " + ar(game.score) + " فقط، وتحتاج أكثر من " + ar(WIN_ABOVE) + " عشان تفوز. جرّب مرة ثانية.";
+  show("result");
+}
+
+/* ---------- التشغيل ---------- */
+function route() {
+  cfg = parseHash();
+  if (cfg) {
+    setupStart();
+  } else {
+    renderSetup();
+    show("setup");
+  }
+}
+
+$("btn-make").addEventListener("click", makeLink);
+$("btn-copy").addEventListener("click", copyLink);
+$("btn-start").addEventListener("click", startGame);
+$("btn-next").addEventListener("click", next);
+$("btn-again").addEventListener("click", startGame);
+$("name-input").addEventListener("input", function () { $("linkbox").hidden = true; });
+window.addEventListener("hashchange", route);
+route();
+</script>
+
+</body>
+</html>
